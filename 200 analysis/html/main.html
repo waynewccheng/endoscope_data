@@ -1,0 +1,631 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Pairwise Color Difference</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-06-30"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Pairwise Color Difference</h1><!--introduction--><p>compare capsule and flexible endoscopes</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Load data</a></li><li><a href="#2">try X-rite</a></li><li><a href="#4">Compare input dE with output dE</a></li><li><a href="#5">Calculate dE</a></li><li><a href="#6">Two-dimensional heat map of pairwise dE</a></li></ul></div><h2 id="1">Load data</h2><pre class="codeinput"><span class="comment">% input data files</span>
+load(<span class="string">'datain\labtruth'</span>,<span class="string">'labtruth'</span>)
+load(<span class="string">'datain\labxrite'</span>,<span class="string">'labxrite'</span>)
+load(<span class="string">'datain\labcapsule'</span>,<span class="string">'labcapsule'</span>)
+load(<span class="string">'datain\labflexible'</span>,<span class="string">'labflexible'</span>)
+</pre><h2 id="2">try X-rite</h2><pre class="codeinput">labtruth = labxrite;
+</pre><pre class="codeinput"><span class="comment">% CIELAB data</span>
+truth(1:24) = ColorClass([0 0 0]);
+capsule(1:24) = ColorClass([0 0 0]);
+flexible(1:24) = ColorClass([0 0 0]);
+
+<span class="keyword">for</span> i = 1:24
+    truth(i) = labtruth(i,:);
+    capsule(i) = labcapsule(i,:);
+    flexible(i) = labflexible(i,:);
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> 1
+<span class="comment">% show data as colorchecker</span>
+    figure(501)
+    im_truth = color2colorchecker24(truth);
+    title(<span class="string">'Truth'</span>)
+
+    figure(502)
+    im_capsule = color2colorchecker24(capsule);
+    title(<span class="string">'Capsule'</span>)
+
+    figure(503)
+    im_flexible = color2colorchecker24(flexible);
+    title(<span class="string">'Flexible'</span>)
+<span class="keyword">end</span>
+
+
+<span class="comment">% Color transfer in the 3D CIELAB color space</span>
+
+<span class="keyword">if</span> 1
+    <span class="comment">% 3D view</span>
+    figure(1)
+    clf
+    hold <span class="string">on</span>
+
+    subplot(1,2,1)
+    myquiver(truth,capsule)
+    title(<span class="string">'Capsule'</span>)
+    view([66 27])
+
+    subplot(1,2,2)
+    myquiver(truth,flexible)
+    title(<span class="string">'Flexible'</span>)
+    view([66 27])
+
+    snapnow
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> 1
+    <span class="comment">% 2D view chromaticity</span>
+    figure(11)
+    clf
+    hold <span class="string">on</span>
+
+    subplot(1,2,1)
+    myquiver(truth(1:18),capsule(1:18))
+    title(<span class="string">'Capsule'</span>)
+    view(2)
+
+    subplot(1,2,2)
+    myquiver(truth(1:18),flexible(1:18))
+    title(<span class="string">'Flexible'</span>)
+    view(2)
+
+    snapnow
+
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> 1
+    <span class="comment">% 2D view lightness</span>
+    figure(12)
+    clf
+    hold <span class="string">on</span>
+
+    subplot(1,2,1)
+    myquiver(truth(19:24),capsule(19:24))
+    axis([-20 20 -20 20 0 100])
+    title(<span class="string">'Capsule'</span>)
+    view([0 0])
+
+    subplot(1,2,2)
+    myquiver(truth(19:24),flexible(19:24))
+    axis([-20 20 -20 20 0 100])
+    title(<span class="string">'Flexible'</span>)
+    view([0 0])
+
+    snapnow
+
+<span class="keyword">end</span>
+
+
+<span class="keyword">if</span> 1
+   <span class="comment">% dE from truth as a bar chart</span>
+    <span class="keyword">for</span> i = 1:24
+        dE_capsule(i) = capsule(i) - truth(i);
+        dE_flexible(i) = flexible(i) - truth(i);
+    <span class="keyword">end</span>
+    figure(13)
+    subplot(4,1,1)
+    bar([dE_capsule(1:6)' dE_flexible(1:6)'])
+    subplot(4,1,2)
+    bar([dE_capsule(7:12)' dE_flexible(7:12)'])
+    subplot(4,1,3)
+    bar([dE_capsule(13:18)' dE_flexible(13:18)'])
+    subplot(4,1,4)
+    bar([dE_capsule(19:24)' dE_flexible(19:24)'])
+    xlabel(<span class="string">'Patch #'</span>)
+    ylabel(<span class="string">'dE'</span>)
+    title(<span class="string">'dE from truth'</span>)
+    legend(<span class="string">'Capsule'</span>,<span class="string">'Flexible'</span>)
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <img vspace="5" hspace="5" src="main_02.png" alt=""> <img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <img vspace="5" hspace="5" src="main_05.png" alt=""> <img vspace="5" hspace="5" src="main_06.png" alt=""> <img vspace="5" hspace="5" src="main_07.png" alt=""> <h2 id="4">Compare input dE with output dE</h2><pre class="codeinput"><span class="keyword">if</span> 1
+
+    <span class="comment">% store dE in a 1D array</span>
+
+    diff_truth = zeros(24*23/2,1);
+    diff_capsule = zeros(24*23/2,1);
+    diff_flexible = zeros(24*23/2,1);
+
+    k = 0;
+    <span class="keyword">for</span> ii = 1:24
+        <span class="keyword">for</span> jj = ii+1:24
+            k = k + 1;
+            i = ii;
+            j = jj;
+            diff_truth(k) = truth(i) - truth(j);
+            diff_capsule(k) = capsule(i) - capsule(j);
+            diff_flexible(k) = flexible(i) - flexible(j);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% plot</span>
+    figure (2)
+    clf
+    hold <span class="string">on</span>
+    plot(diff_truth,diff_capsule,<span class="string">'o'</span>)
+    plot(diff_truth,diff_flexible,<span class="string">'+'</span>)
+    plot([0 100],[0 100],<span class="string">':'</span>)
+    axis <span class="string">equal</span>
+    axis([0 100 0 100])
+    xlabel(<span class="string">'Input dE'</span>)
+    ylabel(<span class="string">'Output dE'</span>)
+    title(<span class="string">'Pairwise Color Difference'</span>)
+    legend(<span class="string">'capsule'</span>,<span class="string">'flexible'</span>,<span class="string">'Identity'</span>)
+    legend(<span class="string">'Location'</span>,<span class="string">'Southeast'</span>)
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="main_08.png" alt=""> <h2 id="5">Calculate dE</h2><pre class="codeinput"><span class="comment">% two-dimensional dE</span>
+dE_pair_truth = zeros(24,24);
+dE_pair_capsule = zeros(24,24);
+dE_pair_capsule_per_truth = zeros(24,24);
+dE_pair_flexible = zeros(24,24);
+dE_pair_flexible_per_truth = zeros(24,24);
+
+<span class="keyword">for</span> ii = 1:24
+    <span class="keyword">for</span> jj = 1:24
+
+        <span class="comment">% the truth</span>
+        dE_pair_truth(ii,jj) = truth(ii) - truth(jj);
+
+        <span class="comment">% capsule</span>
+        dE_pair_capsule(ii,jj) = capsule(ii) - capsule(jj);
+
+        <span class="comment">% ratio of capsule to truth</span>
+        dE_pair_capsule_per_truth(ii,jj) = dE_pair_capsule(ii,jj) / dE_pair_truth(ii,jj);
+
+        <span class="comment">% flexible</span>
+        dE_pair_flexible(ii,jj) = flexible(ii) - flexible(jj);
+
+        <span class="comment">% ratio of flexible to truth</span>
+        dE_pair_flexible_per_truth(ii,jj) = dE_pair_flexible(ii,jj) / dE_pair_truth(ii,jj);
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% one-dimensional without self-comparison</span>
+dE_pair_capsule_per_truth_NaN_removed = zeros(24,23);
+dE_pair_flexible_per_truth_NaN_removed = zeros(24,23);
+
+<span class="keyword">for</span> ii = 1:24
+    k = 1;
+    <span class="keyword">for</span> jj = 1:24
+        <span class="keyword">if</span> jj ~= ii
+            dE_pair_capsule_per_truth_NaN_removed(ii,k) = dE_pair_capsule_per_truth(ii,jj);
+            dE_pair_flexible_per_truth_NaN_removed(ii,k) = dE_pair_flexible_per_truth(ii,jj);
+            k = k + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> 1
+    <span class="comment">% plot</span>
+    figure(4)
+    subplot(1,2,1)
+    boxplot(dE_pair_capsule_per_truth_NaN_removed')
+    title(<span class="string">'Capsule'</span>)
+    xlabel(<span class="string">'Patch #'</span>)
+    ylabel(<span class="string">'dECapsule/dETruth'</span>)
+    axis([0 25 0 2])
+
+    subplot(1,2,2)
+    boxplot(dE_pair_flexible_per_truth_NaN_removed')
+    title(<span class="string">'Flexible'</span>)
+    xlabel(<span class="string">'Patch #'</span>)
+    ylabel(<span class="string">'dEFlexible/dETruth'</span>)
+    axis([0 25 0 2])
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="main_09.png" alt=""> <h2 id="6">Two-dimensional heat map of pairwise dE</h2><pre class="codeinput"><span class="keyword">if</span> 1
+    figure(201)
+    clf
+<span class="comment">%    subplot(2,3,1)</span>
+    imagesc(dE_pair_truth)
+    colorbar
+    caxis([0 80])
+    axis <span class="string">square</span>
+    title(<span class="string">'Truth'</span>)
+
+    figure(202)
+    clf
+<span class="comment">%    subplot(2,3,2)</span>
+    imagesc(dE_pair_capsule)
+    colorbar
+    caxis([0 80])
+    axis <span class="string">square</span>
+    title(<span class="string">'Capsule'</span>)
+
+    figure(203)
+    clf
+<span class="comment">%    subplot(2,3,3)</span>
+    imagesc(dE_pair_capsule_per_truth)
+    colorbar
+    caxis([0 1.7])
+    axis <span class="string">square</span>
+    title(<span class="string">'Capsule/Truth'</span>)
+
+    figure(204)
+    clf
+<span class="comment">%    subplot(2,3,4)</span>
+    imagesc(dE_pair_truth)
+    colorbar
+    caxis([0 80])
+    axis <span class="string">square</span>
+    title(<span class="string">'Truth'</span>)
+
+    figure(205)
+    clf
+<span class="comment">%    subplot(2,3,5)</span>
+    imagesc(dE_pair_flexible)
+    colorbar
+    caxis([0 80])
+    axis <span class="string">square</span>
+    title(<span class="string">'Flexible'</span>)
+
+    figure(206)
+    clf
+<span class="comment">%    subplot(2,3,6)</span>
+    imagesc(dE_pair_flexible_per_truth)
+    colorbar
+    caxis([0 1.7])
+    axis <span class="string">square</span>
+    title(<span class="string">'Flexible/Truth'</span>)
+
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="main_10.png" alt=""> <img vspace="5" hspace="5" src="main_11.png" alt=""> <img vspace="5" hspace="5" src="main_12.png" alt=""> <img vspace="5" hspace="5" src="main_13.png" alt=""> <img vspace="5" hspace="5" src="main_14.png" alt=""> <img vspace="5" hspace="5" src="main_15.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Pairwise Color Difference
+% compare capsule and flexible endoscopes
+
+%% Load data
+
+% input data files
+load('datain\labtruth','labtruth')
+load('datain\labxrite','labxrite')
+load('datain\labcapsule','labcapsule')
+load('datain\labflexible','labflexible')
+
+%% try X-rite
+labtruth = labxrite;
+%%
+
+% CIELAB data
+truth(1:24) = ColorClass([0 0 0]);
+capsule(1:24) = ColorClass([0 0 0]);
+flexible(1:24) = ColorClass([0 0 0]);
+
+for i = 1:24
+    truth(i) = labtruth(i,:);
+    capsule(i) = labcapsule(i,:);
+    flexible(i) = labflexible(i,:);
+end
+
+if 1
+% show data as colorchecker
+    figure(501)
+    im_truth = color2colorchecker24(truth);
+    title('Truth')
+    
+    figure(502)
+    im_capsule = color2colorchecker24(capsule);
+    title('Capsule')
+
+    figure(503)
+    im_flexible = color2colorchecker24(flexible);
+    title('Flexible')
+end
+
+
+% Color transfer in the 3D CIELAB color space
+
+if 1
+    % 3D view        
+    figure(1)
+    clf
+    hold on
+    
+    subplot(1,2,1)
+    myquiver(truth,capsule)
+    title('Capsule')
+    view([66 27])
+    
+    subplot(1,2,2)
+    myquiver(truth,flexible)
+    title('Flexible')
+    view([66 27])
+
+    snapnow
+end
+
+if 1
+    % 2D view chromaticity
+    figure(11)
+    clf
+    hold on
+    
+    subplot(1,2,1)
+    myquiver(truth(1:18),capsule(1:18))
+    title('Capsule')
+    view(2)
+    
+    subplot(1,2,2)
+    myquiver(truth(1:18),flexible(1:18))
+    title('Flexible')
+    view(2)
+
+    snapnow
+
+end
+
+if 1
+    % 2D view lightness
+    figure(12)
+    clf
+    hold on
+    
+    subplot(1,2,1)
+    myquiver(truth(19:24),capsule(19:24))
+    axis([-20 20 -20 20 0 100])
+    title('Capsule')
+    view([0 0])
+    
+    subplot(1,2,2)
+    myquiver(truth(19:24),flexible(19:24))
+    axis([-20 20 -20 20 0 100])
+    title('Flexible')
+    view([0 0])
+
+    snapnow
+
+end
+
+
+if 1
+   % dE from truth as a bar chart
+    for i = 1:24
+        dE_capsule(i) = capsule(i) - truth(i);
+        dE_flexible(i) = flexible(i) - truth(i);
+    end
+    figure(13)
+    subplot(4,1,1)
+    bar([dE_capsule(1:6)' dE_flexible(1:6)'])
+    subplot(4,1,2)
+    bar([dE_capsule(7:12)' dE_flexible(7:12)'])
+    subplot(4,1,3)
+    bar([dE_capsule(13:18)' dE_flexible(13:18)'])
+    subplot(4,1,4)
+    bar([dE_capsule(19:24)' dE_flexible(19:24)'])
+    xlabel('Patch #')
+    ylabel('dE')
+    title('dE from truth')
+    legend('Capsule','Flexible')
+end
+
+
+%% Compare input dE with output dE
+if 1
+   
+    % store dE in a 1D array
+
+    diff_truth = zeros(24*23/2,1);
+    diff_capsule = zeros(24*23/2,1);
+    diff_flexible = zeros(24*23/2,1);
+    
+    k = 0;
+    for ii = 1:24
+        for jj = ii+1:24
+            k = k + 1;
+            i = ii;
+            j = jj;
+            diff_truth(k) = truth(i) - truth(j);
+            diff_capsule(k) = capsule(i) - capsule(j);
+            diff_flexible(k) = flexible(i) - flexible(j);
+        end
+    end
+    
+    % plot
+    figure (2)
+    clf
+    hold on
+    plot(diff_truth,diff_capsule,'o')
+    plot(diff_truth,diff_flexible,'+')
+    plot([0 100],[0 100],':')
+    axis equal
+    axis([0 100 0 100])
+    xlabel('Input dE')
+    ylabel('Output dE')
+    title('Pairwise Color Difference')
+    legend('capsule','flexible','Identity')
+    legend('Location','Southeast')
+end
+
+
+%% Calculate dE
+
+% two-dimensional dE
+dE_pair_truth = zeros(24,24);
+dE_pair_capsule = zeros(24,24);
+dE_pair_capsule_per_truth = zeros(24,24);
+dE_pair_flexible = zeros(24,24);
+dE_pair_flexible_per_truth = zeros(24,24);
+
+for ii = 1:24
+    for jj = 1:24
+        
+        % the truth
+        dE_pair_truth(ii,jj) = truth(ii) - truth(jj);
+        
+        % capsule
+        dE_pair_capsule(ii,jj) = capsule(ii) - capsule(jj);
+        
+        % ratio of capsule to truth
+        dE_pair_capsule_per_truth(ii,jj) = dE_pair_capsule(ii,jj) / dE_pair_truth(ii,jj);
+        
+        % flexible
+        dE_pair_flexible(ii,jj) = flexible(ii) - flexible(jj);
+        
+        % ratio of flexible to truth
+        dE_pair_flexible_per_truth(ii,jj) = dE_pair_flexible(ii,jj) / dE_pair_truth(ii,jj);
+        
+    end
+end
+
+% one-dimensional without self-comparison
+dE_pair_capsule_per_truth_NaN_removed = zeros(24,23);
+dE_pair_flexible_per_truth_NaN_removed = zeros(24,23);
+
+for ii = 1:24
+    k = 1;
+    for jj = 1:24
+        if jj ~= ii
+            dE_pair_capsule_per_truth_NaN_removed(ii,k) = dE_pair_capsule_per_truth(ii,jj);
+            dE_pair_flexible_per_truth_NaN_removed(ii,k) = dE_pair_flexible_per_truth(ii,jj);
+            k = k + 1;
+        end
+    end
+end
+
+if 1
+    % plot
+    figure(4)
+    subplot(1,2,1)
+    boxplot(dE_pair_capsule_per_truth_NaN_removed')
+    title('Capsule')
+    xlabel('Patch #')
+    ylabel('dECapsule/dETruth')
+    axis([0 25 0 2])
+    
+    subplot(1,2,2)
+    boxplot(dE_pair_flexible_per_truth_NaN_removed')
+    title('Flexible')
+    xlabel('Patch #')
+    ylabel('dEFlexible/dETruth')
+    axis([0 25 0 2])
+end
+
+%% Two-dimensional heat map of pairwise dE
+if 1
+    figure(201)
+    clf
+%    subplot(2,3,1)
+    imagesc(dE_pair_truth)
+    colorbar
+    caxis([0 80])
+    axis square
+    title('Truth')
+    
+    figure(202)
+    clf
+%    subplot(2,3,2)
+    imagesc(dE_pair_capsule)
+    colorbar
+    caxis([0 80])
+    axis square
+    title('Capsule')
+    
+    figure(203)
+    clf
+%    subplot(2,3,3)
+    imagesc(dE_pair_capsule_per_truth)
+    colorbar
+    caxis([0 1.7])
+    axis square
+    title('Capsule/Truth')
+    
+    figure(204)
+    clf
+%    subplot(2,3,4)
+    imagesc(dE_pair_truth)
+    colorbar
+    caxis([0 80])
+    axis square
+    title('Truth')
+        
+    figure(205)
+    clf
+%    subplot(2,3,5)
+    imagesc(dE_pair_flexible)
+    colorbar
+    caxis([0 80])
+    axis square
+    title('Flexible')
+    
+    figure(206)
+    clf
+%    subplot(2,3,6)
+    imagesc(dE_pair_flexible_per_truth)
+    colorbar
+    caxis([0 1.7])
+    axis square
+    title('Flexible/Truth')
+    
+end
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

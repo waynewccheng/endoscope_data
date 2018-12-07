@@ -1,0 +1,355 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myquiver</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-06-30"><meta name="DC.source" content="myquiver.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> myquiver (v1, v2)
+    hold <span class="string">on</span>
+    <span class="keyword">for</span> i = 1:size(v1,2)
+        lab1 = v1(i).lab;
+        rgb1 = lab2srgb([lab1(1)*1 lab1(2) lab1(3)])/255;
+        plot3(lab1(2),lab1(3),lab1(1),<span class="string">'o'</span>,<span class="string">'MarkerFaceColor'</span>,rgb1,<span class="string">'MarkerEdgeColor'</span>,rgb1)
+
+        lab2 = v2(i).lab;
+        rgb2 = lab2srgb([lab2(1)*1 lab2(2) lab2(3)])/255;
+        plot3(lab2(2),lab2(3),lab2(1),<span class="string">'s'</span>,<span class="string">'MarkerFaceColor'</span>,rgb2,<span class="string">'MarkerEdgeColor'</span>,rgb2)
+
+        lab21 = lab2-lab1;
+
+        quiver3(lab1(2),lab1(3),lab1(1),lab21(2),lab21(3),lab21(1),<span class="string">'Color'</span>,rgb1)
+    <span class="keyword">end</span>
+
+    xlabel(<span class="string">'CIELAB a*'</span>)
+    ylabel(<span class="string">'CIELAB b*'</span>)
+    zlabel(<span class="string">'CIELAB L*'</span>)
+    grid <span class="string">on</span>
+    view(90,0)
+<span class="comment">%    view(0,90)</span>
+    <span class="comment">% view(6,28)</span>
+    axis <span class="string">square</span>
+    <span class="comment">% axis([-80 120 -100 150 0 150])</span>
+<span class="keyword">end</span>
+
+
+<span class="comment">% lab2srgb([55.67302 -39.1868 33.44079])</span>
+<span class="comment">% 6-13-2013: corrected mat, thanks Ray</span>
+
+<span class="keyword">function</span> rgb = lab2srgb (lab)
+    <span class="comment">% lab is between 0-100</span>
+    L_star = lab(1);
+    a_star = lab(2);
+    b_star = lab(3);
+
+    <span class="comment">% obtain reference white from srgb2xyz([1 1 1])</span>
+    Xn = 0.9505;
+    Yn = 1.0000;
+    Zn = 1.0890;
+
+    <span class="comment">% equations from http://en.wikipedia.org/wiki/Lab_color_space</span>
+    Y2Yn = f_inv((1/116)*(L_star+16));
+    X2Xn = f_inv((1/116)*(L_star+16) + (1/500)*a_star);
+    Z2Zn = f_inv((1/116)*(L_star+16) - (1/200)*b_star);
+
+    <span class="comment">% calculate X Y Z x y z</span>
+    X = Xn * X2Xn;
+    Y = Yn * Y2Yn;
+    Z = Zn * Z2Zn;
+    x = X/(X+Y+Z);
+    y = Y/(X+Y+Z);
+
+    <span class="comment">% from xyY to sRGB</span>
+    rgb = xyY2srgb([x y Y]) * 255;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> ret = f_inv (t)
+    <span class="keyword">if</span> (t &gt; 6/29)
+        ret = t .^ 3;
+    <span class="keyword">else</span>
+        ret = 3 * ((6/29).^2) * (t - 4/29);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> rgb = xyY2srgb (xyY)
+<span class="comment">% http://en.wikipedia.org/wiki/SRGB</span>
+    mat = [3.2406 -1.5372 -0.4986; -0.9689 1.8758 0.0415; 0.0557 -0.2040 1.0570];
+
+    <span class="comment">% calculate tristimulus</span>
+    x = xyY(1);
+    y = xyY(2);
+    Y = xyY(3);
+    z = 1 - x - y;
+    X = x * (Y/y);
+    Z = z * (Y/y);
+
+    <span class="comment">% transform</span>
+    rgblin = mat * [X Y Z]';
+    rgblin = min(rgblin,1);
+    rgblin = max(rgblin,0);
+
+    <span class="comment">% linearize</span>
+    rgb = srgblin(rgblin);
+
+    <span class="keyword">return</span>
+
+    <span class="comment">% helper function for xyz2srgb</span>
+    <span class="keyword">function</span> c_rgb = srgblin (clin)
+        a = 0.055;
+        <span class="keyword">if</span> clin &lt;= 0.0031308
+            c_rgb = clin .* 12.92;
+        <span class="keyword">else</span>
+            c_rgb = power(clin,1/2.4).*(1+a) - a;
+        <span class="keyword">end</span>
+        c_rgb = min(c_rgb,1);
+        c_rgb = max(c_rgb,0);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> ret = xyz2lab (x, y, z, xn, yn, zn)
+retl = 116 * f3(y/yn) - 16;
+reta = 500 * (f3(x/xn) - f3(y/yn));
+retb = 200 * (f3(y/yn) - f3(z/zn));
+ret = [retl reta retb];
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> ret = f3 (t)
+<span class="keyword">if</span> t &gt; power(6/29,3)
+    ret = power(t,1/3);
+<span class="keyword">else</span>
+    ret = t/3*power(29/6,2)+4/29;
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+<span class="keyword">function</span> XYZxyz = srgb2xyz (rgb)
+    mat = [0.4124 0.3576 0.1805; 0.2126 0.7152 0.0722; 0.0193 0.1192 0.9505];
+    rgblin = srgblin(rgb);
+    XYZ = mat * rgblin';
+    sumXYZ = XYZ(1) + XYZ(2) + XYZ(3);
+    <span class="keyword">if</span> (sumXYZ == 0)
+        xyz = [1/3 1/3 1/3];
+    <span class="keyword">else</span>
+        xyz = XYZ ./ sumXYZ;
+    <span class="keyword">end</span>
+    XYZxyz = [XYZ' xyz'];
+
+    <span class="comment">% helper function for srgv2xyz</span>
+    <span class="keyword">function</span> c_linear = srgblin (csrgb)
+        a = 0.055;
+        <span class="keyword">if</span> csrgb &lt;= 0.04045
+            c_linear = csrgb ./ 12.92;
+        <span class="keyword">else</span>
+            c_linear = power((csrgb+a)./(1+a),2.4);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in myquiver (line 3)
+    for i = 1:size(v1,2)
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function myquiver (v1, v2)
+    hold on
+    for i = 1:size(v1,2)
+        lab1 = v1(i).lab;
+        rgb1 = lab2srgb([lab1(1)*1 lab1(2) lab1(3)])/255;
+        plot3(lab1(2),lab1(3),lab1(1),'o','MarkerFaceColor',rgb1,'MarkerEdgeColor',rgb1)
+
+        lab2 = v2(i).lab;
+        rgb2 = lab2srgb([lab2(1)*1 lab2(2) lab2(3)])/255;
+        plot3(lab2(2),lab2(3),lab2(1),'s','MarkerFaceColor',rgb2,'MarkerEdgeColor',rgb2)
+
+        lab21 = lab2-lab1;
+
+        quiver3(lab1(2),lab1(3),lab1(1),lab21(2),lab21(3),lab21(1),'Color',rgb1)
+    end
+
+    xlabel('CIELAB a*')
+    ylabel('CIELAB b*')
+    zlabel('CIELAB L*')
+    grid on
+    view(90,0)
+%    view(0,90)
+    % view(6,28)
+    axis square 
+    % axis([-80 120 -100 150 0 150])
+end
+
+
+% lab2srgb([55.67302 -39.1868 33.44079])
+% 6-13-2013: corrected mat, thanks Ray
+
+function rgb = lab2srgb (lab)
+    % lab is between 0-100
+    L_star = lab(1);
+    a_star = lab(2);
+    b_star = lab(3);
+    
+    % obtain reference white from srgb2xyz([1 1 1])
+    Xn = 0.9505;
+    Yn = 1.0000;
+    Zn = 1.0890;
+
+    % equations from http://en.wikipedia.org/wiki/Lab_color_space
+    Y2Yn = f_inv((1/116)*(L_star+16));
+    X2Xn = f_inv((1/116)*(L_star+16) + (1/500)*a_star);
+    Z2Zn = f_inv((1/116)*(L_star+16) - (1/200)*b_star);
+
+    % calculate X Y Z x y z
+    X = Xn * X2Xn;
+    Y = Yn * Y2Yn;
+    Z = Zn * Z2Zn;
+    x = X/(X+Y+Z);
+    y = Y/(X+Y+Z);
+    
+    % from xyY to sRGB
+    rgb = xyY2srgb([x y Y]) * 255;
+end
+
+function ret = f_inv (t)
+    if (t > 6/29)
+        ret = t .^ 3;
+    else
+        ret = 3 * ((6/29).^2) * (t - 4/29);
+    end
+end
+
+function rgb = xyY2srgb (xyY)
+% http://en.wikipedia.org/wiki/SRGB
+    mat = [3.2406 -1.5372 -0.4986; -0.9689 1.8758 0.0415; 0.0557 -0.2040 1.0570];
+
+    % calculate tristimulus
+    x = xyY(1);
+    y = xyY(2);
+    Y = xyY(3);
+    z = 1 - x - y;
+    X = x * (Y/y);
+    Z = z * (Y/y);
+    
+    % transform
+    rgblin = mat * [X Y Z]';
+    rgblin = min(rgblin,1);
+    rgblin = max(rgblin,0);
+
+    % linearize
+    rgb = srgblin(rgblin);
+
+    return
+        
+    % helper function for xyz2srgb
+    function c_rgb = srgblin (clin)
+        a = 0.055;
+        if clin <= 0.0031308
+            c_rgb = clin .* 12.92;
+        else
+            c_rgb = power(clin,1/2.4).*(1+a) - a; 
+        end
+        c_rgb = min(c_rgb,1);
+        c_rgb = max(c_rgb,0);
+    end
+end
+
+function ret = xyz2lab (x, y, z, xn, yn, zn)
+retl = 116 * f3(y/yn) - 16;
+reta = 500 * (f3(x/xn) - f3(y/yn));
+retb = 200 * (f3(y/yn) - f3(z/zn));
+ret = [retl reta retb];
+end
+
+function ret = f3 (t)
+if t > power(6/29,3)
+    ret = power(t,1/3);
+else
+    ret = t/3*power(29/6,2)+4/29;
+end
+end
+
+
+function XYZxyz = srgb2xyz (rgb)
+    mat = [0.4124 0.3576 0.1805; 0.2126 0.7152 0.0722; 0.0193 0.1192 0.9505];
+    rgblin = srgblin(rgb);
+    XYZ = mat * rgblin';
+    sumXYZ = XYZ(1) + XYZ(2) + XYZ(3);
+    if (sumXYZ == 0)
+        xyz = [1/3 1/3 1/3];
+    else
+        xyz = XYZ ./ sumXYZ;
+    end
+    XYZxyz = [XYZ' xyz'];
+    
+    % helper function for srgv2xyz
+    function c_linear = srgblin (csrgb)
+        a = 0.055;
+        if csrgb <= 0.04045
+            c_linear = csrgb ./ 12.92;
+        else
+            c_linear = power((csrgb+a)./(1+a),2.4); 
+        end
+    end
+end
+
+##### SOURCE END #####
+--></body></html>
