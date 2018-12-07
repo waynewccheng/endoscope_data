@@ -9,7 +9,7 @@ function myquiver (v1, v2)
         rgb2 = lab2srgb([lab2(1)*1 lab2(2) lab2(3)])/255;
         plot3(lab2(2),lab2(3),lab2(1),'s','MarkerFaceColor',rgb2,'MarkerEdgeColor',rgb2)
 
-        lab21 = lab2-lab1;
+        lab21 = (lab2-lab1)*0.95;
 
         quiver3(lab1(2),lab1(3),lab1(1),lab21(2),lab21(3),lab21(1),'Color',rgb1)
     end
